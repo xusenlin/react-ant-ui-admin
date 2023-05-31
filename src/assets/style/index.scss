@@ -1,0 +1,27 @@
+*{
+  margin: 0;
+  padding: 0;
+}
+
+.main-content{
+  padding: 16px;
+  height: calc(100vh - 142px);
+  overflow-x: hidden;
+  overflow-y: auto;
+}
+
+.logo-vertical {
+  height: 60px;
+  padding-left: 24px;
+  display: flex;
+  border-bottom: 1px solid #f5f5f5;
+  border-right: 1px solid #f5f5f5;
+  margin-bottom: 6px;
+  align-items: center;
+  color: #222;
+  font-weight: bold;
+  font-size: 16px;
+  img{
+    margin-right: 10px;
+  }
+}
