@@ -82,35 +82,5 @@ export const sendTestMaterials: OptionsType = [
   {name: "其他", value: "OTHER"},
 ]
 
-export const samplingSite: string[] = [
-  "Kidney (Primary Tumor)",
-  "Appendix (Metastatic Tumor)",
-  "Adrenal Gland (Metastatic Tumor)",
-  "Bile Duct (Metastatic Tumor)",
-  "Bone (Metastatic Tumor)",
-  "Bone Marrow (Metastatic Tumor)",
-  "Brain (Metastatic Tumor)",
-  "Breast (Metastatic Tumor)",
-  "Colon (Metastatic Tumor)",
-  "Esophagus (Metastatic Tumor)",
-  "Gall Bladder (Metastatic Tumor)",
-  "Kidney (Metastatic Tumor)",
-  "Liver (Metastatic Tumor)",
-  "Lung (Metastatic Tumor)",
-  "Lymph Nodes (Metastatic Tumor)",
-  "Meninges (Metastatic Tumor)",
-  "Muscle (Metastatic Tumor)",
-  "Omentum (Metastatic Tumor)",
-  "Ovary (Metastatic Tumor)",
-  "Pancreas (Metastatic Tumor)",
-  "Peritoneum (Metastatic Tumor)",
-  "Pleura (Metastatic Tumor)",
-  "Prostate (Metastatic Tumor)",
-  "Stomach (Metastatic Tumor)",
-  "Testis (Metastatic Tumor)",
-  "Thyroid (Metastatic Tumor)",
-  "Ureter (Metastatic Tumor)",
-  "Uterus (Metastatic Tumor)",
-]
 
 

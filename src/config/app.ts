@@ -9,6 +9,10 @@ export const version:string = "0.01"
 
 export const storagePrefixKey:string = "BERRY_FORM:"
 
+export const storageTokenKey = `${storagePrefixKey}Token`
+
+export const storageUserInfoKey = `${storagePrefixKey}UserInfo`
+
 export const appName:string = "表单报表系统"
 
 //当前处于什么环境

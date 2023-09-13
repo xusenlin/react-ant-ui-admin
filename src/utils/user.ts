@@ -1,23 +1,23 @@
 import Storage from "good-storage";
-import {tokenKey, userInfoKey} from "@/config/app.ts";
+import {storageTokenKey, storageUserInfoKey} from "@/config/app.ts";
 import {User} from "@/store/sliceUser.ts";
 
 
 export function getUserInfo():User {
-  return Storage.get(userInfoKey, {});
+  return Storage.get(storageUserInfoKey, {});
 }
 
 
 export function setUserInfo(user:User):User {
-  Storage.set(userInfoKey, user);
+  Storage.set(storageUserInfoKey, user);
   return user;
 }
 export function isLogin() : boolean{
-  return Storage.get(tokenKey,false)
+  return Storage.get(storageTokenKey,false)
 }
 
 export function getToken():string {
-  return Storage.get(tokenKey);
+  return Storage.get(storageTokenKey);
 }
 
 /**
@@ -26,7 +26,7 @@ export function getToken():string {
  * @returns {*|undefined}
  */
 export function setToken(token:string) : void{
-  return Storage.set(tokenKey, token);
+  return Storage.set(storageTokenKey, token);
 }
 
 /**
@@ -34,5 +34,5 @@ export function setToken(token:string) : void{
  * @returns {*}
  */
 export function removeToken():void {
-  return Storage.remove(tokenKey);
+  return Storage.remove(storageTokenKey);
 }
