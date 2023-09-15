@@ -8,14 +8,15 @@ import {MenuType, useMenuStore} from "@/store/menu.ts"
 type MenuItem = {
   label: React.ReactNode,
   key: React.Key,
+  type?:string,
   children?: MenuItem[],
   icon?: React.ReactNode,
 }
 
 const createIcon = name => (React.createElement(Icons[name]))
 const buildMenu = (menu:MenuType[]):MenuItem[] => (menu.map(r=>{
-  const { label,path,icon,children } = r
-  let item = {label,key:path} as MenuItem
+  const { label,path,icon,children,type } = r
+  let item = {label,key:path,type} as MenuItem
   if(icon){
     item.icon = createIcon(icon)
   }

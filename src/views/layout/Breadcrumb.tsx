@@ -3,7 +3,12 @@ import {Breadcrumb} from 'antd';
 import {MenuType, useMenuStore} from "@/store/menu.ts"
 import {useLocation} from "react-router-dom";
 
-const getMenuMap = (menu: MenuType[], val = [])=> {
+
+type MenuMap = {
+  [path:string]:{title:string,path:string}[]
+}
+
+const getMenuMap = (menu: MenuType[], val = []):MenuMap=> {
   let map = {};
   let childrenMap = {}
   for (const item of menu) {
@@ -26,7 +31,9 @@ const App: React.FC = () => {
   const location = useLocation()
   const breadcrumb = menuMap.hasOwnProperty(location.pathname) ? menuMap[location.pathname] : []
   return (
-      <Breadcrumb items={breadcrumb}/>
+      <div className="breadcrumb">
+        <Breadcrumb items={breadcrumb}/>
+      </div>
   );
 };
 

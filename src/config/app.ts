@@ -13,7 +13,7 @@ export const storageTokenKey = `${storagePrefixKey}Token`
 
 export const storageUserInfoKey = `${storagePrefixKey}UserInfo`
 
-export const appName:string = "表单报表系统"
+export const appName:string = "React Ant Admin"
 
 //当前处于什么环境
 export const envMode: EnvModeEnum = import.meta.env.MODE as EnvModeEnum

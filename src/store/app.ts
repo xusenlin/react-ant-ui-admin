@@ -2,16 +2,11 @@ import { create } from "zustand";
 import { storagePrefixKey } from "@/config/app.ts"
 import { persist } from 'zustand/middleware'
 
-export type MenuType = {
-  label: string,
-  path: string,
-  icon?: string,
-  children?: MenuType[],
-}
 
-export interface IMenuState {
-  menu: MenuType[];
-  // increment: () => void;
+
+export interface AppType {
+  collapsed: boolean;
+  setCollapsed: (val:boolean) => void;
   // decrement: () => void;
 }
 
@@ -19,31 +14,13 @@ export interface IMenuState {
 
 
 
-export const useMenuStore = create<IMenuState>(
+export const useAppStore = create<AppType>(
     persist(
-        (set, get):IMenuState => ({
-          menu: [
-            {
-              label: "仪表盘",
-              path: "/dashboard",
-              icon:"HomeOutlined"
-            },
-            {
-              label: "Demo",
-              path: "/demo",
-              icon:"GithubOutlined",
-              children:[
-                {
-                  label: "仪表盘",
-                  path: "/demo/dashboard",
-                  icon:"HomeOutlined",
-                },
-              ]
-            }
-          ],
-          // addABear: () => set({ bears: get().bears + 1 }),
+        (set, get):AppType => ({
+          collapsed:true,
+          setCollapsed: (val) => set({ collapsed: get().collapsed = val }),
         }),
-        {name: storagePrefixKey + "Menu"}
+        {name: storagePrefixKey + "App"}
     )
 );
 
