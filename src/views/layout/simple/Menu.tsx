@@ -32,13 +32,14 @@ const App: React.FC = () => {
   const menu = useMenuStore((state) => state.menu)
   const navigate = useNavigate()
   const location = useLocation()
+  const paths = location.pathname.split("/").filter(part => part !== "");
 
   return (
       <Menu
           style={{border: "none"}}
           theme="light"
-          defaultSelectedKeys={[location.pathname]}
-          onClick={m=>navigate(m.key)}
+          defaultSelectedKeys={paths.map(r=>(`/${r}`))}
+          onClick={(m)=>{navigate(m.keyPath.reverse().join(''))}}
           mode="inline"
           items={buildMenu(menu)}/>
   );

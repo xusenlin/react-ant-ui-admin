@@ -1,4 +1,5 @@
 import React from 'react';
+
 import {  Layout, theme } from 'antd';
 import Menu from "./Menu.tsx"
 import Header from "./Header.tsx"
@@ -30,7 +31,6 @@ const App: React.FC = () => {
           </Sider>
           <Layout>
             <Content style={{ background: colorBgContainer }}>
-
               <div className="main-content" >
                 <Outlet />
               </div>

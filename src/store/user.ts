@@ -1,16 +1,23 @@
 import { create } from "zustand";
 
-
-export interface ICounterState {
-  count: number;
-  increment: () => void;
-  decrement: () => void;
+export type UserType = {
+  name:string
+  token:string
 }
 
 
-const useCounterStore = create<ICounterState>((set) => ({
-  count: 0,
-  increment: () => set((state) => ({ count: state.count + 1 })),
-  decrement: () => set((state) => ({ count: state.count - 1 })),
+
+export interface IUserState {
+  user: UserType;
+  setUser: (user:UserType) => void;
+}
+
+
+const useUserStore = create<IUserState>((set):IUserState => ({
+  user: {
+    name:"Admin",
+    token:""
+  },
+  setUser: (user) => set(() => ({ user: user })),
 }));
 

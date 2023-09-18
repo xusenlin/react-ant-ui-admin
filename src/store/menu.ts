@@ -28,19 +28,20 @@ export const useMenuStore = create<IMenuState>(
           label: "Demo",
           children: [
             {
+              label: "分析数据",
+              path: "/demo",
+              icon: "FundOutlined"
+            },
+            {
               label: "文章管理",
+              path: "/article",
               icon: "ApartmentOutlined",
               children: [
                 {
                   label: "文章列表",
-                  path: "/demo",
+                  path: "/list",
                 },
               ],
-            },
-            {
-              label: "分析数据",
-              path: "/dome1",
-              icon: "FundOutlined"
             },
           ]
         },
@@ -76,22 +77,24 @@ export const useMenuStore = create<IMenuState>(
             },
             {
               label: "Ai智能助手",
+              path: "/dome6",
               icon: "HeatMapOutlined",
               children: [
                 {
                   label: "支持多级菜单",
+                  path: "/dome7",
                   icon: "AntDesignOutlined",
                   children: [
                     {
                       label: "子菜单",
-                      path: "/dome111",
+                      path: "/dome9",
                       icon: "MenuFoldOutlined"
                     }
                   ]
                 },
                 {
                   label: "Icon 非必填",
-                  path: "/dome8",
+                  path: "/dome22",
                 },
               ]
             },
