@@ -17,7 +17,7 @@ export function isLogin() : boolean{
 }
 
 export function getToken():string {
-  return Storage.get(storageTokenKey);
+  return "bearer "+Storage.get(storageTokenKey);
 }
 
 /**

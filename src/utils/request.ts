@@ -1,8 +1,18 @@
-import { getToken } from "@/utils/user.ts"
-import { toFormData } from "@/utils/app.ts"
+import {getToken} from "@/utils/user.ts"
+import {toFormData} from "@/utils/app.ts"
 import axios, {InternalAxiosRequestConfig} from "axios";
-import { baseURL,timeout,statusDesc } from "@/config/request.ts"
-import type { AxiosInstance, AxiosRequestConfig, AxiosResponse } from "axios";
+import {baseURL, timeout, statusDesc} from "@/config/request.ts"
+import { message } from 'antd';
+import type {AxiosInstance, AxiosRequestConfig, AxiosResponse} from "axios";
+import {RequestData} from "@ant-design/pro-table/es/typing";
+
+declare module 'axios' {
+  export interface AxiosRequestConfig {
+    // closeLoading?:boolean,//默认所有请求Loading，可关闭
+    token?: string,//默认获取本地token，可针对某个请求写死或置空
+    isFormRequest?: boolean,//将请求自动转换为表单请求
+  }
+}
 
 export type ResponseResult<T> = {
   code: number;
@@ -10,75 +20,129 @@ export type ResponseResult<T> = {
   data: T;
 };
 
-declare module 'axios' {
-  export interface AxiosRequestConfig{
-    closeLoading?:boolean,//默认所有请求Loading，可关闭
-    token?:string,//默认获取本地token，可针对某个请求写死或置空
-    isFormRequest?:boolean,//将请求自动转换为表单请求
-    closeInstance?:boolean
+
+
+const commonRequestInterceptors = (config: InternalAxiosRequestConfig) => {
+  if ("token" in config) {
+    config.headers.Authorization = config.token
+  } else {
+    config.headers.Authorization = getToken()
   }
+  if (config.isFormRequest) {
+    config.transformRequest = toFormData
+  }
+  return config;
+}
+const commonRequestErrInterceptors =  (err: any) => {
+  message.error(err)
+  return Promise.reject(err);
 }
 
-export type RequestConfig = Omit<AxiosRequestConfig, 'closeInstance' | 'transformRequest'>
+const commonResponseErrInterceptors =  (err: any) => {
+  let msg = "";
+  if (statusDesc[err.response.status]) {
+    msg = statusDesc[err.response.status]
+  } else {
+    msg = `连接出错(${err.response.status})!`
+  }
+  message.error(msg)
+  return Promise.reject(err.response);
+}
+
 
 export class Request {
-  instance: AxiosInstance;
+  instance: AxiosInstance;//不做任何处理的请求,需要自己处理http错误和业务错误
+  instanceOk: AxiosInstance;//根据业务自动报错，只有成功才会返回需要的数据
+  instanceProTable: AxiosInstance;//专门用于proTable组件的分页请求
   constructor(config: AxiosRequestConfig) {
     this.instance = axios.create(config);
-    this.instance.interceptors.request.use(
-        (config:InternalAxiosRequestConfig) => {
-          if ("token" in config){
-            config.headers.Authorization = config.token
-          }else {
-            config.headers.Authorization = getToken()
-          }
-          if (config.isFormRequest){config.transformRequest = toFormData}
-          if(!config.closeLoading){
-            //Loading
-          }
-          return config;
-        },
-        (err: any) => {
-          // 请求错误，这里可以用全局提示框进行提示
-          return Promise.reject(err);
-        }
-    );
+    this.instanceOk = axios.create(config);
+    this.instanceProTable = axios.create(config);
+    this.instance.interceptors.request.use(commonRequestInterceptors);
+    this.instanceOk.interceptors.request.use(commonRequestInterceptors, commonRequestErrInterceptors);
+    this.instanceProTable.interceptors.request.use((config: InternalAxiosRequestConfig) => {
+      if ("token" in config) {
+        config.headers.Authorization = config.token
+      } else {
+        config.headers.Authorization = getToken()
+      }
+      if (config.isFormRequest) {
+        config.transformRequest = toFormData
+      }
 
-    this.instance.interceptors.response.use(
+        //是PorTable分页请求需要将PorTable的分页参数和自己业务的参数对其
+        let current = config.data.current
+        config.data.current = undefined
+        config.data.pageNum = current
+
+
+      return config;
+    }, commonRequestErrInterceptors);
+
+    this.instanceOk.interceptors.response.use(
         (res: AxiosResponse) => {
-          // 直接返回res，当然你也可以只返回res.data
-          // 系统如果有自定义code也可以在这里处理
-          return res;
-        },
-        (err: any) => {
-          let message = "";
-          if (statusDesc[err.response.status]){
-            message = statusDesc[err.response.status]
-          }else {
-            message = `连接出错(${err.response.status})!`
+          //这里根据业务代码进行处理正确的数据
+          const resData = res.data
+          if (resData.code === "A0234"){
+            message.warning("请重新登录系统")
+            return
           }
-          // 这里错误消息可以使用全局弹框展示出来
-          // 比如element plus 可以使用 ElMessage
-          // ElMessage({
-          //   showClose: true,
-          //   message: `${message}，请检查网络或联系管理员！`,
-          //   type: "error",
-          // });
-          // 这里是AxiosError类型，所以一般我们只reject我们需要的响应即可
-          console.log(message)
-          return Promise.reject(err.response);
-        }
+          if (resData.code != "00000") {
+            message.error(resData.msg);
+            return
+          }
+          return resData.data;
+        },
+        commonResponseErrInterceptors,
+    );
+    this.instanceProTable.interceptors.response.use(
+        (res: AxiosResponse) => {
+          //这里根据业务代码进行处理正确的数据
+          const resData = res.data
+          if (resData.code === "A0234"){
+            message.warning("请重新登录系统")
+            return
+          }
+          if (resData.code != "00000") {
+            message.warning(resData.msg);
+            return
+          }
+          let  result = resData.data
+          return {
+            data: result.records||[],
+            success: true,
+            total: parseInt(result.total),
+          };
+        },
+        commonResponseErrInterceptors,
     );
   }
-  //未拦截请求，响应原封不动返回
-  public unhandledRequest<T>(config: RequestConfig): Promise<AxiosResponse<ResponseResult<T>>> {
+
+
+  public request<T>(config: AxiosRequestConfig): Promise<AxiosResponse<ResponseResult<T>>> {
     return this.instance.request(config);
   }
-  //做了拦截处理，自动报错，只返回关心的数据
-  public request<T>(config: RequestConfig): Promise<T> {
-    return this.instance.request(config);
+
+
+  public requestOk<T>(config: AxiosRequestConfig): Promise<T> {
+    return this.instanceOk.request(config);
+  }
+
+  public requestProTable<T>(config: AxiosRequestConfig): Promise<Partial<RequestData<T>>> {
+
+    return this.instanceProTable.request(config);
   }
 }
 
-export const { request,unhandledRequest } = new Request({baseURL,timeout})
+const instance= new Request({baseURL, timeout})
+
+export default instance
+
+
+//未拦截请求，响应原封不动返回
+export const request = <T>(config: AxiosRequestConfig)  => instance.request<T>(config)
+//做了拦截处理，自动报错，只返回关心的数据
+export const requestOk = <T>(config: AxiosRequestConfig) => instance.requestOk<T>(config)
+//proTable组件的分页请求
+export const requestProTable = <T>(config: AxiosRequestConfig) => instance.requestProTable<T[]>(config)
 

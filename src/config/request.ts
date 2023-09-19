@@ -2,7 +2,7 @@ export const  baseURL:string = import.meta.env.VITE_BASE_URL
 
 export const  timeout = 80000
 
-export const statusDesc:{[value: number]:string} = {
+export const statusDesc: {[value: number]: string} = {
   400: "请求错误(400)",
   401: "未授权，请重新登录(401)",
   403: "拒绝访问(403)",
@@ -13,6 +13,16 @@ export const statusDesc:{[value: number]:string} = {
   502: "网络错误(502)",
   503: "服务不可用(503)",
   504: "网络超时(504)",
-  505: "HTTP版本不受支持(505)"
-}
+  505: "HTTP版本不受支持(505)",
+  600: "数据库连接错误(600)",
+  601: "数据库查询错误(601)",
+  602: "数据库写入错误(602)",
+  603: "数据库删除错误(603)",
+  700: "文件上传错误(700)",
+  701: "文件下载错误(701)",
+  702: "文件删除错误(702)",
+  800: "权限验证失败(800)",
+  801: "无访问权限(801)",
+  802: "访问被限制(802)"
+};
 

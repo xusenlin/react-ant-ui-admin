@@ -7,7 +7,7 @@ export enum EnvModeEnum {
 
 export const version:string = "0.01"
 
-export const storagePrefixKey:string = "BERRY_FORM:"
+export const storagePrefixKey:string = "ANT-ADMIN:"
 
 export const storageTokenKey = `${storagePrefixKey}Token`
 
